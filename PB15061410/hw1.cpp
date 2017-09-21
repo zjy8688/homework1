@@ -234,7 +234,8 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)
 
 		angle = atan2(grad_y, grad_x);
 		if (angle < 0) *angleData = angle * (float)57.29578 + 360;
-		if (angle > 0) *angleData = angle * (float)57.29578;
+		else if (angle > 0) *angleData = angle * (float)57.29578;
+		else  *angleData = 0;
 		angleData++;
 
 		mag = sqrt(grad_x*grad_x + grad_y*grad_y);
