@@ -730,7 +730,7 @@ int ustc_SubImgMatch_corr(Mat grayImg, Mat subImg, int* x, int* y){
 	}
 	*y = min_y;
 	*x = min_x;
-	cout << min_x << "  " << min_y << endl;
+	
 };
 
 int CalcAngle(const Mat & gradImg_x, const Mat & gradImg_y, Mat & angleImg)
@@ -871,7 +871,7 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y){
 	*y = min_y;
 	*x = min_x;
 
-	cout << *y << " " << *x << endl;
+
 };
 
 int CalcMag(const Mat & gradImg_x, const Mat & gradImg_y, Mat & magImg)
@@ -984,7 +984,7 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y){
 	*y = min_y;
 	*x = min_x;
 
-	cout << *y << " " << *x << endl;
+	
 };
 
 
@@ -1362,24 +1362,4 @@ void test_match_hist()
 }
 
 
-int main()
-{
-	//test_bgr2gray();
-
-	//test_threshold();
-	//test_grad();
-	//test_match_bgr();
-	//test_match_corr();
-	//test_match_angle();
-	//test_match_mag();
-	//test_hist();
-	//test_match_hist();
-	for (int i = 0; i < 2; i++){
-		test_match_hist();
-	}
-
-
-	system("pause");
-	return 0;
-}
 
