@@ -202,22 +202,26 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)
 
 		angle = atan2(*xData, *yData);
 		if (angle < 0) *angleData = angle * (float)57.29578 + 360;
-		if (angle > 0) *angleData = angle * (float)57.29578;
+		else if (angle > 0) *angleData = angle * (float)57.29578;
+		else  *angleData = 0;
 		angleData++;
 
 		angle = atan2(*(xData + 1), *(yData + 1));
 		if (angle < 0) *angleData = angle * (float)57.29578 + 360;
-		if (angle > 0) *angleData = angle * (float)57.29578;
+		else if (angle > 0) *angleData = angle * (float)57.29578;
+		else  *angleData = 0;
 		angleData++;
 
 		angle = atan2(*(xData + 2), *(yData + 2));
 		if (angle < 0) *angleData = angle * (float)57.29578 + 360;
-		if (angle > 0) *angleData = angle * (float)57.29578;
+		else if (angle > 0) *angleData = angle * (float)57.29578;
+		else  *angleData = 0;
 		angleData++;
 
 		angle = atan2(*(xData + 3), *(yData + 3));
 		if (angle < 0) *angleData = angle * (float)57.29578 + 360;
-		if (angle > 0) *angleData = angle * (float)57.29578;
+		else if (angle > 0) *angleData = angle * (float)57.29578;
+		else  *angleData = 0;
 		angleData++;
 
 		xData += 4; yData += 4;
@@ -247,8 +251,12 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)
 			grad_x = ((float*)gradImg_x.data)[row_i * cols + col_j];
 			grad_y = ((float*)gradImg_y.data)[row_i * cols + col_j];
 			angle = atan2(grad_y, grad_x);
+			//if (angle < -181) 
+			//	angle = 0;
+			//assert(isnan(angle) == 0);
 			if (angle < 0)((float*)angleImg.data)[row_i * cols + col_j] = angle * 180 / 3.1415926 + 360;
-			if (angle > 0)((float*)angleImg.data)[row_i * cols + col_j] = angle * 180 / 3.1415926;
+			else if (angle > 0)((float*)angleImg.data)[row_i * cols + col_j] = angle * 180 / 3.1415926;
+			else ((float*)angleImg.data)[row_i * cols + col_j] = 0;
 
 			mag = sqrt(grad_x*grad_x + grad_y*grad_y);
 			((float*)magImg.data)[row_i * cols + col_j] = mag;
@@ -642,8 +650,8 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 		for (int j = 1; j < cols_diff - 1; j++)
 		{
 			int total_diff = 0;
-			const float* Data = angleImg.ptr<float>(0) + i * cols + j;
-			const float* subData = subAngleImg.ptr<float>(0);
+			const float* Data = angleImg.ptr<float>(0) + i * cols + j +1;
+			const float* subData = subAngleImg.ptr<float>(0) + sub_cols +1;
 			//遍历模板图上的每一个像素
 			for (int sub_i = 1; sub_i < sub_rows - 1; sub_i++)
 			{
@@ -662,12 +670,11 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff < min)
 			{
 				min = total_diff;
-				*x = i;
+				*x = i - 1;
 				*y = j;
 			}
 		}
 	}
-
 	return SUB_IMAGE_MATCH_OK;
 }
 
