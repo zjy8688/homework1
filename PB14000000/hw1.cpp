@@ -1,3 +1,7 @@
+// Software Engineering Homework1
+// Author  : Xumiao Zhang, PB14000295
+// Date    : 2017-09-21
+
 #include"SubImageMatch.h"
 
 int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)
