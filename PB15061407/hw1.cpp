@@ -752,7 +752,7 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y) {
 
 	}
 
-	float tmp = 1000; *x = 0; *y = 0;
+	float tmp = 9999999999999999999; *x = 0; *y = 0;
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		for (int j = 0; j < width - sub_width; j++) {
