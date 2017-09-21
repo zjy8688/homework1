@@ -18,7 +18,6 @@ int ustc_ConvertBgr2Gray(Mat bgrImg, Mat & grayImg)
 	int length = nRows*nCols;
 	for (int i=0; i < length; i++)
 	{
-		//grayImg.at<uchar>(i,j) = (bgrImg.at<Vec3b>(i, j)[0] * 7472 + bgrImg.at<Vec3b>(i, j)[1] * 38469 + bgrImg.at<Vec3b>(i, j)[2] * 19595) >> 16;
 		*gray++ =( *bgr++ * 7472 + *bgr++ * 38469 + *bgr++ * 19595) >> 16;
 	}
 	return SUB_IMAGE_MATCH_OK;
@@ -98,8 +97,6 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat & angleImg, Mat & magImg
 		}
 		*angle++ = ang;
 		*mag++ = sqrt(*dy*(*dy++) + *dx*(*dx++));
-		//std::cout << ang<<' ';
-		//std::cin;
 	}
 	return SUB_IMAGE_MATCH_OK;
 }
@@ -188,8 +185,6 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int * x, int * y)
 				}
 				gray += dCols;
 				if ((min - sum) >> 31)break;
-				//sub = sub + dCols;
-				//gray += dCols;
 			}
 			min = !((sum - min) >> 31)*min + !((min - sum) >> 31)*sum;
 			finex = !(sum^min)*j + ((sum^min) && 1)*finex;
@@ -240,8 +235,6 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int * x, int * y)
 				}
 				gbr += dCols;
 				if ((min - sum) >> 31)break;
-				//sub = sub + dCols;
-				//gbr += dCols;
 			}
 
 			min = !((sum - min) >> 31)*min + !((min - sum) >> 31)*sum;
@@ -333,33 +326,70 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int * x, int * y)
 	int grayCols = grayImg.cols;
 	int *sub_ang, *gray_ang;
 	sub_ang = new int[angRows*angCols];
-	int *sub_p = sub_ang;
+	gray_ang = new int[(grayRows - 2)*(grayCols - 2)];
+	int *sub_p = sub_ang, *gray_p = gray_ang;
 	uchar *a0 = subImg.data, *a1 = a0 + subCols, *a2 = a1 + subCols;
+	uchar *b0 = grayImg.data, *b1 = b0 + grayCols, *b2 = b1 + grayCols;
 	int i, j;
 	int temp;
 	int dx, dy;
 	for (i = angRows; i; --i)
 	{
-		for (j = angCols; j; --j, sub_p++)
+		for (j = angCols; j; --j, sub_p++, gray_p++)
 		{
 			dx = *a2 + 2 * *(a2 + 1) + *(a2 + 2) - *a0 - 2 * *(a0 + 1) - *(a0 + 2);
 			dy = *a0 + 2 * *a1 + *a2 - *(a0 + 2) - 2 * *(a1 + 2) - *(a2 + 2);
 			temp = atan2(dx, dy)*57.3;
 			*sub_p = temp + (!(dx >> 31))*((temp >> 31)) * 360;
-			a0++;
-			a1++;
-			a2++;
+			dx = *b2 + 2 * *(b2 + 1) + *(b2 + 2) - *b0 - 2 * *(b0 + 1) - *(b0 + 2);
+			dy = *b0 + 2 * *b1 + *b2 - *(b0 + 2) - 2 * *(b1 + 2) - *(b2 + 2);
+			temp = atan2(dx, dy)*57.3;
+			*gray_p = temp + (!(dx >> 31))*((temp >> 31)) * 360;
+			++a0;
+			++a1;
+			++a2;
+			++b0;
+			++b1;
+			++b2;
 		}
 		a0 += 2;
 		a1 += 2;
 		a2 += 2;
+		for (j = grayCols - subCols; j; --j, gray_p++)
+		{
+			dx = *b2 + 2 * *(b2 + 1) + *(b2 + 2) - *b0 - 2 * *(b0 + 1) - *(b0 + 2);
+			dy = *b0 + 2 * *b1 + *b2 - *(b0 + 2) - 2 * *(b1 + 2) - *(b2 + 2);
+			temp = atan2(dx, dy)*57.3;
+			*gray_p = temp + (!(dx >> 31))*((temp >> 31)) * 360;
+			++b0;
+			++b1;
+			++b2;
+		}
+		b0 += 2;
+		b1 += 2;
+		b2 += 2;
 	}
-	
+	for (i = grayRows - subRows; i; --i)
+	{
+		for (j = grayCols - 2; j; --j, gray_p++)
+		{
+			dx = *b2 + 2 * *(b2 + 1) + *(b2 + 2) - *b0 - 2 * *(b0 + 1) - *(b0 + 2);
+			dy = *b0 + 2 * *b1 + *b2 - *(b0 + 2) - 2 * *(b1 + 2) - *(b2 + 2);
+			temp = atan2(dx, dy)*57.3;
+			*gray_p = temp + (!(dx >> 31))*((temp >> 31)) * 360;
+			++b0;
+			++b1;
+			++b2;
+		}
+		b0 += 2;
+		b1 += 2;
+		b2 += 2;
+	}
 	int nRows = grayImg.rows - angRows - 1;
 	int nCols = grayImg.cols - angCols - 1;
-	int dCols = grayImg.cols - angCols;
+	int dCols = grayImg.cols - subCols;
 	int finex = 0, finey = 0;
-	uchar *gray0 = grayImg.data;
+	int *gray0 = gray_ang;
 	int  k, l;
 	int min = 0x7FFFFFFF;
 	int sum;
@@ -368,33 +398,24 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int * x, int * y)
 	{
 		for (j = 0; j < nCols; ++j)
 		{
-			for (a0 = gray0, a1 = a0 + grayCols , a2 = a1 + grayCols ,sub_p = sub_ang, k = angRows, sum = 0; k; --k)
+			for (gray_p = gray0, sub_p = sub_ang, k = angRows, sum = 0; k; --k)
 			{
-				for (l = angCols; l; --l, ++sub_p)
+				for (l = angCols; l; --l, ++sub_p, ++gray_p)
 				{
-					dx = *a2 + 2 * *(a2 + 1) + *(a2 + 2) - *a0 - 2 * *(a0 + 1) - *(a0 + 2);
-					dy = *a0 + 2 * *a1 + *a2 - *(a0 + 2) - 2 * *(a1 + 2) - *(a2 + 2);
-					temp = atan2(dx, dy)*57.3;
-					temp += (!(dx >> 31))*((temp >> 31)) * 360;
-					diff = *sub_p - temp;
+					diff = *sub_p - *gray_p;
 					diff = ((diff >> 31) & 1)*(~diff + 1) + !(diff >> 31)*diff;
 					diff = !((diff - 180) >> 31)*(360 - diff) + (((diff - 180) >> 31) & 1)* diff;
 					sum += diff;
-					++a0;
-					++a1;
-					++a2;
-					if ((min - sum) >> 31)break;
 				}
-				a0 += dCols;
-				a1 += dCols;
-				a2 += dCols;
+				if ((min - sum) >> 31)break;
+				gray_p += dCols;
 			}
 			min = !((sum - min) >> 31)*min + !((min - sum) >> 31)*sum;
 			finex = !(sum^min)*j + ((sum^min) && 1)*finex;
 			finey = !(sum^min)*i + ((sum^min) && 1)*finey;
 			++gray0;
 		}
-		gray0 = gray0 + (subCols - 1);
+		gray0 = gray0 + (subCols - 3);
 	}
 	*x = finex;
 	*y = finey;
@@ -414,40 +435,73 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int * x, int * y)
 		cout << "image is NULL." << endl;
 		return SUB_IMAGE_MATCH_FAIL;
 	}
-	int magRows = subImg.rows - 2;
-	int magCols = subImg.cols - 2;
+	int angRows = subImg.rows - 2;
+	int angCols = subImg.cols - 2;
 	int subRows = subImg.rows;
 	int subCols = subImg.cols;
 	int grayRows = grayImg.rows;
 	int grayCols = grayImg.cols;
-	int *sub_mag;// *gray_ang;
-	sub_mag = new int[magRows*magCols];
-	int *sub_p = sub_mag;
+	int *sub_ang, *gray_ang;
+	sub_ang = new int[angRows*angCols];
+	gray_ang = new int[(grayRows - 2)*(grayCols - 2)];
+	int *sub_p = sub_ang, *gray_p = gray_ang;
 	uchar *a0 = subImg.data, *a1 = a0 + subCols, *a2 = a1 + subCols;
+	uchar *b0 = grayImg.data, *b1 = b0 + grayCols, *b2 = b1 + grayCols;
 	int i, j;
-	int temp;
 	int dx, dy;
-	for (i = magRows; i; --i)
+	for (i = angRows; i; --i)
 	{
-		for (j = magCols; j; --j, sub_p++)
+		for (j = angCols; j; --j, sub_p++, gray_p++)
 		{
 			dx = *a2 + 2 * *(a2 + 1) + *(a2 + 2) - *a0 - 2 * *(a0 + 1) - *(a0 + 2);
 			dy = *a0 + 2 * *a1 + *a2 - *(a0 + 2) - 2 * *(a1 + 2) - *(a2 + 2);
-			*sub_p = dy*dy + dx*dx;
-			a0++;
-			a1++;
-			a2++;
+			*sub_p = dx * dx + dy*dy;
+			dx = *b2 + 2 * *(b2 + 1) + *(b2 + 2) - *b0 - 2 * *(b0 + 1) - *(b0 + 2);
+			dy = *b0 + 2 * *b1 + *b2 - *(b0 + 2) - 2 * *(b1 + 2) - *(b2 + 2);
+			*gray_p = dx*dx + dy*dy;
+			++a0;
+			++a1;
+			++a2;
+			++b0;
+			++b1;
+			++b2;
 		}
 		a0 += 2;
 		a1 += 2;
 		a2 += 2;
+		for (j = grayCols - subCols; j; --j, gray_p++)
+		{
+			dx = *b2 + 2 * *(b2 + 1) + *(b2 + 2) - *b0 - 2 * *(b0 + 1) - *(b0 + 2);
+			dy = *b0 + 2 * *b1 + *b2 - *(b0 + 2) - 2 * *(b1 + 2) - *(b2 + 2);
+			*gray_p = dx*dx + dy*dy;
+			++b0;
+			++b1;
+			++b2;
+		}
+		b0 += 2;
+		b1 += 2;
+		b2 += 2;
 	}
-
-	int nRows = grayImg.rows - magRows - 1;
-	int nCols = grayImg.cols - magCols - 1;
-	int dCols = grayImg.cols - magCols;
+	for (i = grayRows - subRows; i; --i)
+	{
+		for (j = grayCols - 2; j; --j, gray_p++)
+		{
+			dx = *b2 + 2 * *(b2 + 1) + *(b2 + 2) - *b0 - 2 * *(b0 + 1) - *(b0 + 2);
+			dy = *b0 + 2 * *b1 + *b2 - *(b0 + 2) - 2 * *(b1 + 2) - *(b2 + 2);
+			*gray_p = dx*dx + dy*dy;
+			++b0;
+			++b1;
+			++b2;
+		}
+		b0 += 2;
+		b1 += 2;
+		b2 += 2;
+	}
+	int nRows = grayImg.rows - angRows - 1;
+	int nCols = grayImg.cols - angCols - 1;
+	int dCols = grayImg.cols - subCols;
 	int finex = 0, finey = 0;
-	uchar *gray0 = grayImg.data;
+	int *gray0 = gray_ang;
 	int  k, l;
 	int min = 0x7FFFFFFF;
 	int sum;
@@ -456,30 +510,23 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int * x, int * y)
 	{
 		for (j = 0; j < nCols; ++j)
 		{
-			for (a0 = gray0, a1 = a0 + grayCols, a2 = a1 + grayCols, sub_p = sub_mag, k = magRows, sum = 0; k; --k)
+			for (gray_p = gray0, sub_p = sub_ang, k = angRows, sum = 0; k; --k)
 			{
-				for (l = magCols; l; --l, ++sub_p)
+				for (l = angCols; l; --l, ++sub_p, ++gray_p)
 				{
-					dx = *a2 + 2 * *(a2 + 1) + *(a2 + 2) - *a0 - 2 * *(a0 + 1) - *(a0 + 2);
-					dy = *a0 + 2 * *a1 + *a2 - *(a0 + 2) - 2 * *(a1 + 2) - *(a2 + 2);
-					temp = dy*dy + dx*dx;
-					diff = *sub_p - temp;
-					sum += ((diff >> 31) & 1)*(~diff + 1) + !(diff >> 31)*diff;
-					++a0;
-					++a1;
-					++a2;
+					diff = *sub_p - *gray_p;
+					diff = ((diff >> 31) & 1)*(~diff + 1) + !(diff >> 31)*diff;
+					sum += diff;
 				}
-				a0 += dCols;
-				a1 += dCols;
-				a2 += dCols;
+				if ((min - sum) >> 31)break;
+				gray_p += dCols;
 			}
-			if ((min - sum) >> 31)break;
 			min = !((sum - min) >> 31)*min + !((min - sum) >> 31)*sum;
 			finex = !(sum^min)*j + ((sum^min) && 1)*finex;
 			finey = !(sum^min)*i + ((sum^min) && 1)*finey;
 			++gray0;
 		}
-		gray0 = gray0 + (subCols - 1);
+		gray0 = gray0 + (subCols - 3);
 	}
 	*x = finex;
 	*y = finey;
