@@ -1,4 +1,3 @@
-
 //#include <stdafx.h>
 #include"SubImageMatch.h"
 
@@ -19,7 +18,28 @@ int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
-
+	if (bgrImg.channels() != 3) {
+		cout << "bgrImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (bgrImg.depth() != 0) {
+		cout << "bgrImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (bgrImg.rows != grayImg.rows || bgrImg.cols != grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
+	
 	//int width = bgrImg.cols;
 	//int height = bgrImg.rows;
 	//int b, g, r, grayVal;
@@ -75,6 +95,35 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)
 	if (!grayImg.data)
 	{
 		cout << "image is NULL." << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_x.channels() != 1) {
+		cout << "gradImg_x channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_y.channels() != 1) {
+		cout << "gradImg_y channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_x.depth() != 5) {
+		cout << "gradImg_x depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_y.depth() != 5) {
+		cout << "gradImg_y depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.rows != gradImg_x.rows || grayImg.rows != gradImg_y.rows || grayImg.cols != gradImg_x.cols || grayImg.cols != gradImg_y.cols)
+	{
+		cout << "Image size wrong!" << endl;
 		return MY_FAIL;
 	}
 
@@ -170,6 +219,48 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (gradImg_x.channels() != 1) {
+		cout << "gradImg_x channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_y.channels() != 1) {
+		cout << "gradImg_y channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (angleImg.channels() != 1) {
+		cout << "angleImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (magImg.channels() != 1) {
+		cout << "magImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_x.depth() != 5) {
+		cout << "gradImg_x depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_y.depth() != 5) {
+		cout << "gradImg_y depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (angleImg.depth() != 5) {
+		cout << "angleImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (magImg.depth() != 5) {
+		cout << "magImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_x.rows != gradImg_y.rows || gradImg_y.rows != angleImg.rows || magImg.rows != angleImg.rows)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (gradImg_x.cols != gradImg_y.cols || gradImg_y.cols != angleImg.cols || magImg.cols != angleImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
 	angleImg.setTo(0);
 	magImg.setTo(0);
 	int i = gradImg_x.rows*gradImg_x.cols - 1;
@@ -242,9 +333,35 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)
 
 int ustc_Threshold(Mat grayImg, Mat& binaryImg, int th)
 {
-	if (!grayImg.data)
+	if (!grayImg.data|| !binaryImg.data)
 	{
 		cout << "image is NULL." << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (binaryImg.channels() != 1) {
+		cout << "binaryImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (binaryImg.depth() != 0) {
+		cout << "binaryImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (binaryImg.rows != grayImg.rows || binaryImg.cols != grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (th < 0 || th>255)
+	{
+		cout << "threshold wrong!" << endl;
 		return MY_FAIL;
 	}
 	//int width = grayImg.cols;
@@ -301,6 +418,14 @@ int ustc_CalcHist(Mat grayImg, int* hist, int hist_len)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
 	//int width = grayImg.cols;
 	//int height = grayImg.rows;
 	int i;
@@ -339,6 +464,27 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (subImg.channels() != 1) {
+		cout << "subImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.depth() != 0) {
+		cout << "subImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.rows>grayImg.rows || subImg.cols>grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
 	int width = grayImg.cols;
 	int height = grayImg.rows;
 	int sub_width = subImg.cols;
@@ -349,13 +495,16 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y)
 	int sub_height_m_width = sub_height*width;
 	int i_max = height - sub_height + 1;
 	int j_max = width - sub_width + 1;
+	register int total_diff = 0;
+	int sub = 0;
+	register short diff;
 	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < i_max; i++)
 	{
 		for (int j = 0; j < j_max; j++)
 		{
-			int total_diff = 0;
-			int sub = 0;
+			total_diff = 0;
+			sub = 0;
 			//遍历模板图上的每一个像素
 			for (m = 0; m < sub_height; m++)
 			{
@@ -367,7 +516,7 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y)
 					//int bigImg_pix = grayImg.data[i_m_width + j + n];
 					////模板图上的像素
 					//int template_pix = subImg.data[sub++];
-					short diff = grayImg.data[i_m_width + j + n] - subImg.data[sub++];
+					diff = grayImg.data[i_m_width + j + n] - subImg.data[sub++];
 					if (diff < 0)diff = 0 - diff;
 					total_diff += diff;
 				}
@@ -401,6 +550,27 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int* x, int* y)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (subImg.channels() != 3) {
+		cout << "subImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (colorImg.channels() != 3) {
+		cout << "colorImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.depth() != 0) {
+		cout << "subImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (colorImg.depth() != 0) {
+		cout << "colorImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.rows>colorImg.rows || subImg.cols>colorImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
 	int width = colorImg.cols;
 	int height = colorImg.rows;
 	int sub_width = subImg.cols;
@@ -411,13 +581,16 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int* x, int* y)
 	int sub_height_m_width = sub_height*width;
 	int i_max = height - sub_height + 1;
 	int j_max = width - sub_width + 1;
+	register int total_diff = 0;
+	int sub = 0;
+	register short diff;
 	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < i_max; i++)
 	{
 		for (int j = 0; j < j_max; j++)
 		{
-			int total_diff = 0;
-			int sub = 0;
+			total_diff = 0;
+			sub = 0;
 			//遍历模板图上的每一个像素
 			for (m = 0; m < sub_height; m++)
 			{
@@ -429,7 +602,7 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int* x, int* y)
 					//int bigImg_pix = grayImg.data[i_m_width + j + n];
 					////模板图上的像素
 					//int template_pix = subImg.data[sub++];
-					short diff = colorImg.data[3 * (i_m_width + j + n) + 0] - subImg.data[sub++];
+					diff = colorImg.data[3 * (i_m_width + j + n) + 0] - subImg.data[sub++];
 					if (diff < 0)diff = 0 - diff;
 					total_diff += diff;
 					 diff = colorImg.data[3 * (i_m_width + j + n) + 1] - subImg.data[sub++];
@@ -521,6 +694,28 @@ int ustc_SubImgMatch_corr(Mat grayImg, Mat subImg, int* x, int* y)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (subImg.channels() != 1) {
+		cout << "subImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.depth() != 0) {
+		cout << "subImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.rows>grayImg.rows || subImg.cols>grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
+
 
 	int width = grayImg.cols;
 	int height = grayImg.rows;
@@ -549,12 +744,13 @@ int ustc_SubImgMatch_corr(Mat grayImg, Mat subImg, int* x, int* y)
 	float corr = 0;
 	uchar bigImg_pix;
 	uchar template_pix;
+	int sub = 0;
 	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < i_max; i++)
 	{
 		for (int j = 0; j < j_max; j++)
 		{
-			int sub = 0;
+			sub = 0;
 			sum_s = sum_t = sum_st = 0;
 			//遍历模板图上的每一个像素
 			for (m = 0; m < sub_height; m++)
@@ -635,6 +831,27 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (subImg.channels() != 1) {
+		cout << "subImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.depth() != 5) {
+		cout << "subImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 5) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.rows>grayImg.rows || subImg.cols>grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
 	int width = grayImg.cols;
 	int height = grayImg.rows;
 	int sub_width = subImg.cols;
@@ -645,13 +862,16 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 	int sub_height_m_width = sub_height*width;
 	int i_max = height - sub_height + 1;
 	int j_max = width - sub_width + 1;
+	register short diff;
+	register int total_diff = 0;
+	int sub = 0;
 	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < i_max; i++)
 	{
 		for (int j = 0; j < j_max; j++)
 		{
-			int total_diff = 0;
-			int sub = 0;
+			total_diff = 0;
+			sub = 0;
 			//遍历模板图上的每一个像素
 			for (m = 0; m < sub_height; m++)
 			{
@@ -663,7 +883,7 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 					//int bigImg_pix = grayImg.data[i_m_width + j + n];
 					////模板图上的像素
 					//int template_pix = subImg.data[sub++];
-					short diff =((float*)grayImg.data)[i_m_width + j + n] - ((float*)subImg.data)[sub++];
+					diff =((float*)grayImg.data)[i_m_width + j + n] - ((float*)subImg.data)[sub++];
 					if (diff < 0)diff = 0 - diff;
 					if (diff > 180)diff = 360 - diff;
 					total_diff += diff;
@@ -789,6 +1009,27 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (subImg.channels() != 1) {
+		cout << "subImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.depth() != 5) {
+		cout << "subImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 5) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.rows>grayImg.rows || subImg.cols>grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
 	int width = grayImg.cols;
 	int height = grayImg.rows;
 	int sub_width = subImg.cols;
@@ -799,13 +1040,16 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y)
 	int sub_height_m_width = sub_height*width;
 	int i_max = height - sub_height + 1;
 	int j_max = width - sub_width + 1;
+	short diff;
+	int total_diff = 0;
+	int sub = 0;
 	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < i_max; i++)
 	{
 		for (int j = 0; j < j_max; j++)
 		{
-			int total_diff = 0;
-			int sub = 0;
+			total_diff = 0;
+			sub = 0;
 			//遍历模板图上的每一个像素
 			for (m = 0; m < sub_height; m++)
 			{
@@ -817,7 +1061,7 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y)
 					//int bigImg_pix = grayImg.data[i_m_width + j + n];
 					////模板图上的像素
 					//int template_pix = subImg.data[sub++];
-					short diff = ((float*)grayImg.data)[i_m_width + j + n] - ((float*)subImg.data)[sub++];
+					diff = ((float*)grayImg.data)[i_m_width + j + n] - ((float*)subImg.data)[sub++];
 					if (diff < 0)diff = 0 - diff;
 					total_diff += diff;
 				}
@@ -937,6 +1181,27 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y)
 		cout << "image is NULL." << endl;
 		return MY_FAIL;
 	}
+	if (subImg.channels() != 1) {
+		cout << "subImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.channels() != 1) {
+		cout << "grayImg channels wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.depth() != 0) {
+		cout << "subImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (grayImg.depth() != 0) {
+		cout << "grayImg depth wrong!" << endl;
+		return MY_FAIL;
+	}
+	if (subImg.rows>grayImg.rows || subImg.cols>grayImg.cols)
+	{
+		cout << "Image size wrong!" << endl;
+		return MY_FAIL;
+	}
 
 	int width = grayImg.cols;
 	int height = grayImg.rows;
@@ -949,7 +1214,7 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y)
 	Mat minorImg(subImg.rows, subImg.cols, CV_8UC1);   //子图
 	int i_max = height - sub_height + 1;
 	int j_max = width - sub_width + 1;
-
+	int total_diff;
 	flag = ustc_CalcHist(subImg, subhist, 256);     //目标图直方图
 
 
@@ -958,7 +1223,7 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y)
 	{
 		for (int j = 0; j < j_max; j++)
 		{
-			int total_diff = 0;
+			total_diff = 0;
 			//遍历模板图上的每一个像素
 			for (int m = 0; m < sub_height; m++)
 			{
