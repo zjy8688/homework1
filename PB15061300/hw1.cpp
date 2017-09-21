@@ -472,8 +472,8 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int * x, int * y)
 				a0 += dCols;
 				a1 += dCols;
 				a2 += dCols;
-				if ((min - sum) >> 31)break;
 			}
+			if ((min - sum) >> 31)break;
 			min = !((sum - min) >> 31)*min + !((min - sum) >> 31)*sum;
 			finex = !(sum^min)*j + ((sum^min) && 1)*finex;
 			finey = !(sum^min)*i + ((sum^min) && 1)*finey;
