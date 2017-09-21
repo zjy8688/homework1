@@ -1362,24 +1362,4 @@ void test_match_hist()
 }
 
 
-int main()
-{
-	//test_bgr2gray();
-
-	//test_threshold();
-	//test_grad();
-	//test_match_bgr();
-	//test_match_corr();
-	//test_match_angle();
-	//test_match_mag();
-	//test_hist();
-	//test_match_hist();
-	for (int i = 0; i < 2; i++){
-		test_match_hist();
-	}
-
-
-	system("pause");
-	return 0;
-}
 
