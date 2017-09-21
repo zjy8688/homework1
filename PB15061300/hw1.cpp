@@ -91,12 +91,8 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat & angleImg, Mat & magImg
 	float ang;
 	for (int i = 0; i < length; i++)
 	{
-		ang = atan2(*dy, *dx)*57.29577951;
-		if (*dx < 0)
-		{
-			ang += 180;
-		}
-		else if (ang < 0)
+		ang = atan2(*dy, *dx)*57.3;
+		if (ang < 0)
 		{
 			ang += 360;
 		}
@@ -349,7 +345,7 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int * x, int * y)
 			dx = *a2 + 2 * *(a2 + 1) + *(a2 + 2) - *a0 - 2 * *(a0 + 1) - *(a0 + 2);
 			dy = *a0 + 2 * *a1 + *a2 - *(a0 + 2) - 2 * *(a1 + 2) - *(a2 + 2);
 			temp = atan2(dx, dy)*57.3;
-			*sub_p = temp + ((dx >> 31) & 1) * 180 + (!(dx >> 31))*((temp >> 31)) * 360;
+			*sub_p = temp + (!(dx >> 31))*((temp >> 31)) * 360;
 			a0++;
 			a1++;
 			a2++;
@@ -379,7 +375,7 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int * x, int * y)
 					dx = *a2 + 2 * *(a2 + 1) + *(a2 + 2) - *a0 - 2 * *(a0 + 1) - *(a0 + 2);
 					dy = *a0 + 2 * *a1 + *a2 - *(a0 + 2) - 2 * *(a1 + 2) - *(a2 + 2);
 					temp = atan2(dx, dy)*57.3;
-					temp += ((dx >> 31) & 1) * 180 + (!(dx >> 31))*((temp >> 31)) * 360;
+					temp += (!(dx >> 31))*((temp >> 31)) * 360;
 					diff = *sub_p - temp;
 					diff = ((diff >> 31) & 1)*(~diff + 1) + !(diff >> 31)*diff;
 					diff = !((diff - 180) >> 31)*(360 - diff) + (((diff - 180) >> 31) & 1)* diff;
