@@ -172,11 +172,16 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)
 {
 	if (gradImg_x.data == NULL) return SUB_IMAGE_MATCH_FAIL;
 	if (gradImg_y.data == NULL) return SUB_IMAGE_MATCH_FAIL;
+
+	if (gradImg_x.rows != gradImg_y.rows) return SUB_IMAGE_MATCH_FAIL;
+	if (gradImg_x.cols != gradImg_y.cols) return SUB_IMAGE_MATCH_FAIL;
+
 	const int rows = gradImg_x.rows;
 	const int cols = gradImg_x.cols;
 	const int pixie = rows*cols;
 	const int pixie_ratio = pixie / 4;
 	const int pixie_remain = pixie - pixie_ratio * 4;
+
 	angleImg.create(rows, cols, CV_32FC1);
 	magImg.create(rows, cols, CV_32FC1);
 
@@ -415,8 +420,8 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff < min)
 			{
 				min = total_diff;
-				*x = i;
-				*y = j;
+				*x = j;
+				*y = i;
 			}
 		}
 	}
@@ -480,8 +485,8 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int* x, int* y)
 			if (total_diff < min)
 			{
 				min = total_diff;
-				*x = i;
-				*y = j/3;
+				*x = j / 3;
+				*y = i;
 			}
 		}
 	}
@@ -564,8 +569,8 @@ int ustc_SubImgMatch_corr(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff > max)
 			{
 				max = total_diff;
-				*x = i;
-				*y = j;
+				*x = j;
+				*y = i;
 			}
 		}
 	}
@@ -602,8 +607,8 @@ int ustc_SubImgMatch_corr(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff > max)
 			{
 				max = total_diff;
-				*x = i;
-				*y = j;
+				*x = j;
+				*y = i;
 			}
 		}
 	}
@@ -671,8 +676,8 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff < min)
 			{
 				min = total_diff;
-				*x = i - 1;
-				*y = j;
+				*x = j;
+				*y = i - 1;
 			}
 		}
 	}
@@ -738,8 +743,8 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff < min)
 			{
 				min = total_diff;
-				*x = i;
-				*y = j;
+				*x = j;
+				*y = i;
 			}
 		}
 	}
@@ -758,6 +763,7 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y)
 {
 	if (grayImg.data == NULL) return SUB_IMAGE_MATCH_FAIL;
 	if (subImg.data == NULL) return SUB_IMAGE_MATCH_FAIL;
+	if (subImg.rows > grayImg.rows || subImg.cols > grayImg.cols) return SUB_IMAGE_MATCH_FAIL;
 
 	int gray_rows = grayImg.rows;
 	int gray_cols = grayImg.cols;
@@ -802,8 +808,8 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y)
 			if (total_diff < min)
 			{
 				min = total_diff;
-				*x = i;
-				*y = j;
+				*x = j;
+				*y = i;
 			}
 		}
 	}
