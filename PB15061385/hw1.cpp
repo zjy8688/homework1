@@ -784,7 +784,7 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int *x, int *y) {
             }
         }
     }
-     assert(littlesum == 0);
+
     return SUB_IMAGE_MATCH_OK;
 }
 
