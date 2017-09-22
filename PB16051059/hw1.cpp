@@ -4,7 +4,7 @@
 
 int ustc_ConvertBgr2Gray(Mat bgrImg,Mat&grayImg)
 {
-	if (NULL == grayImg.data)
+	if (NULL == bgrImg.data)
 	{
 		cout << "colorImg ERROR! ---ustc_ConvertBgr2Gray" << endl;
 		return -1;
@@ -34,6 +34,11 @@ int ustc_ConvertBgr2Gray(Mat bgrImg,Mat&grayImg)
 		}
 	}
 	
+	namedWindow("ConvertBgr2Gray");
+	imshow("ConvertBgr2Gray",grayImg);
+	waitKey(1);
+
+
 	return 0;
 }   
 
@@ -77,7 +82,7 @@ int ustc_CalcGrad(Mat grayImg,Mat&gradImg_x,Mat&gradImg_y)
 			gradImg_y.data[step] = grad_y;
 		}
 	}
-
+	
 	return 0;
 }
 
@@ -181,6 +186,10 @@ int ustc_Threshold(Mat grayImg,Mat&binaryImg,int th)
 			binaryImg.data[step] = val;
 		}
 	}
+	
+	namedWindow("Threshold");
+	imshow("Threshold", binaryImg);
+	waitKey(1);
 	return 0;
 }
 
