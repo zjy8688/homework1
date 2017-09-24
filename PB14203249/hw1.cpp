@@ -1265,20 +1265,3 @@ void test_ustc_SubImgMatch_hist()
 	time_t end = clock();
 	cout << "time = " << (end - start) / 1000.0 << endl;
 }
-int main()
-{
-	//test();
-	//test_ustc_ConvertBgr2Gray();
-	//test_ustc_Threshold();
-	//test_ustc_CalcGrad();
-	//test_ustc_CalcAngleMag();
-	//test_ustc_CalcHist();
-	//test_ustc_SubImgMatch_gray();
-	//test_ustc_SubImgMatch_bgr();
-	//test_ustc_SubImgMatch_corr();
-	//test_ustc_SubImgMatch_angle_mag();
-	//test_ustc_SubImgMatch_hist();
-	getchar();
-	return SUB_IMAGE_MATCH_OK;
-
-}
