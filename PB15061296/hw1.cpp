@@ -1,6 +1,6 @@
 #include<SubImageMatch.h>
 
-int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg) {   //灰度生成
+int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg) {  
 	if (NULL == bgrImg.data)
 	{
 		cout << "image is NULL." << endl;
@@ -36,7 +36,7 @@ int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg) {   //灰度生成
 }
 
 
-int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y) {        //梯度图生成
+int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y) {        
 	if (NULL == grayImg.data)
 	{
 		cout << "image is NULL." << endl;
@@ -61,7 +61,7 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y) {        //梯度
 	gradImg_x.setTo(0);
 	gradImg_y.setTo(0);
 
-	//计算x方向梯度图
+	
 	for (int row_i = 1; row_i < height - 1; row_i++)
 	{
 		int temp0 = (row_i - 1) * width;
@@ -92,7 +92,7 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y) {        //梯度
 
 
 
-int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg) {      //计算角度和幅值
+int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg) {      
 	if (NULL == gradImg_x.data || NULL == gradImg_y.data)
 	{
 		cout << "image is NULL." << endl;
@@ -128,7 +128,7 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg) 
 	Mat F_magImg = magImg;
 
 
-	//计算角度图
+	
 	for (int row_i = 1; row_i < height - 1; row_i++)
 	{
 		int temp = row_i * width;
@@ -163,7 +163,7 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg) 
 	return 1;
 }
 
-int ustc_Threshold(Mat grayImg, Mat& binaryImg, int th) {       //图像二值化
+int ustc_Threshold(Mat grayImg, Mat& binaryImg, int th) {       
 	if (NULL == grayImg.data)
 	{
 		cout << "image is NULL." << endl;
@@ -195,7 +195,7 @@ int ustc_Threshold(Mat grayImg, Mat& binaryImg, int th) {       //图像二值�
 }
 
 
-int ustc_CalcHist(Mat grayImg, int* hist, int hist_len) {           //直方图计算
+int ustc_CalcHist(Mat grayImg, int* hist, int hist_len) {           
 	if (NULL == grayImg.data || NULL == hist)
 	{
 		cout << "image is NULL." << endl;
@@ -212,13 +212,13 @@ int ustc_CalcHist(Mat grayImg, int* hist, int hist_len) {           //直方图�
 	int width = grayImg.cols;
 	int height = grayImg.rows;
 
-	//直方图清零
+	
 	for (int i = 0; i < hist_len; i++)
 	{
 		hist[i] = 0;
 	}
 
-	//计算直方图
+	
 	for (int row_i = 0; row_i < height; row_i++)
 	{
 		int temp = row_i * width;
@@ -258,14 +258,13 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y) {
 	Mat searchsub = subImg;
 
 	int a, b;
-	//遍历大图每一个像素，注意行列的起始、终止坐标
+	
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		int temp = i*width;
 		for (int j = 0; j < width - sub_width; j++)
 		{
 			int total_diff = 0;
-			//遍历模板图上的每一个像素
 			int temp1 = temp + j;
 			for (int in_x = 0; in_x < sub_height; in_x++)
 			{
@@ -273,13 +272,10 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y) {
 				int sub = in_x*sub_height;
 				for (int in_y = 0; in_y < sub_width; in_y++)
 				{
-					//大图上的像素位置
-					//模板图上的像素
 					int pix = searchImg.data[temp2 + in_y] - searchsub.data[sub + in_y];
 					total_diff -= (2 * (pix >> 31 & 1) - 1)*pix;
 				}
 			}
-			//存储当前像素位置的匹配误差
 			if (Min > total_diff) {
 				Min = total_diff;
 				a = j;
@@ -314,20 +310,16 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int *x, int *y) {
 		cout << "subImg too huge" << endl;
 		return -1;
 	}
-
-	//该图用于记录每一个像素位置的匹配误差
+	
 	Mat searchImg=colorImg;
 	Mat searchsub = subImg;
-	//匹配误差初始化
 	int a, b;
-	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		int temp = 3*i*width;
 		for (int j = 0; j < width - sub_width; j++)
 		{
 			int total_diff = 0;
-			//遍历模板图上的每一个像素
 			int temp1 = temp + 3*j;
 			for (int in_x = 0; in_x < sub_height; in_x++)
 			{
@@ -335,8 +327,6 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int *x, int *y) {
 				int sub = 3*in_x*sub_height;
 				for (int in_y = 0; in_y < sub_width; in_y++)
 				{
-					//大图上的像素位置
-					//模板图上的像素
 					int temp3 = temp2 + 3 * in_y;
 					int sub1 = sub + 3 * in_y;
 					int pix0 = searchImg.data[temp3] - searchsub.data[sub1];
@@ -345,7 +335,6 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int *x, int *y) {
 					total_diff -= (2 * (pix0 >> 31 & 1) - 1)*pix0+ (2 * (pix1 >> 31 & 1) - 1)*pix1+ (2 * (pix2 >> 31 & 1) - 1)*pix2;
 				}
 			}
-			//存储当前像素位置的匹配误差
 			if (Min > total_diff) {
 				Min = total_diff;
 				a = j;
@@ -384,11 +373,7 @@ int ustc_SubImgMatch_corr(Mat grayImg,Mat subImg,int* x,int* y) {
 	Mat searchImg = grayImg;
 	Mat searchsub = subImg;
 
-	//该图用于记录每一个像素位置的匹配误差
-	//Mat searchImg(height, width, CV_32FC1);
-	//匹配误差初始化
 	int a, b;
-	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		int temp = i*width;
@@ -398,7 +383,6 @@ int ustc_SubImgMatch_corr(Mat grayImg,Mat subImg,int* x,int* y) {
 			int total_S = 0;
 			int total_SG = 0;
 			float total_diff = 0;
-			//遍历模板图上的每一个像素
 			int temp1 = temp + j;
 			for (int in_x = 0; in_x < sub_height; in_x++)
 			{
@@ -408,21 +392,11 @@ int ustc_SubImgMatch_corr(Mat grayImg,Mat subImg,int* x,int* y) {
 				{
 					int pix_gary = searchImg.data[temp2 + in_y];
 					int pix_sub = searchsub.data[sub + in_y];
-					//大图上的像素位置
-					//模板图上的像素
 					total_G += pix_gary*pix_gary;
 					total_S += pix_sub*pix_sub;
 					total_SG += pix_sub*pix_gary;
 				}
 			}
-			//存储当前像素位置的匹配误差
-			//((float*)searchImg.data)[i * width + j] = total_diff;
-		//	total_G -= 0x3f800000;
-		//	total_G >>= 1;
-		//	total_G += 0x3f800000;
-		//	total_S -= 0x3f800000;
-		//	total_S >>= 1;
-		//	total_S += 0x3f800000;
 			total_diff = float(total_SG) / (sqrt(total_S)*sqrt(total_G));
 			if (Max < total_diff) {
 				Max = total_diff;
@@ -471,7 +445,7 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y) {
 	sub_y = ustc_CalcGrad(searchsub, subImg_x, subImg_y);
 	int row_i, col_j, temp_sub, temp1_sub;
 	float grad_x_sub, grad_y_sub, grad_xa, grad_ya, angle_sub;
-	for (row_i = 1; row_i < sub_height - 1; row_i++)     //对小图做整形的角度计算
+	for (row_i = 1; row_i < sub_height - 1; row_i++)     
 	{
 		temp_sub = row_i * sub_width;
 		for (col_j = 1; col_j < sub_width - 1; col_j += 1)
@@ -488,14 +462,10 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y) {
 			else angle_sub -= 0.0079*angle_sub*(45 - angle_sub);
 			if (grad_x_sub < 0) angle_sub = 180 - angle_sub;
 			if (grad_y_sub < 0) angle_sub = 360 - angle_sub;
-			//float angle = atan2(grad_y, grad_x);
-			//angle *= 180 / CV_PI;
-			//angle += 180;
-			//自己找办法优化三角函数速度，并且转化为角度制，规范化到0-360
 			(sub_angle.data)[temp1_sub] = *(int*)&(angle_sub)/2;
 		}
 	}
-	for (row_i = 1; row_i < height - 1; row_i++)                    //对大图做整形的角度运算
+	for (row_i = 1; row_i < height - 1; row_i++)                   
 	{
 		temp_sub = row_i * width;
 		for (col_j = 1; col_j < width - 1; col_j += 1)
@@ -512,26 +482,16 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y) {
 			else angle_sub -= 0.0079*angle_sub*(45 - angle_sub);
 			if (grad_x_sub < 0) angle_sub = 180 - angle_sub;
 			if (grad_y_sub < 0) angle_sub = 360 - angle_sub;
-			//float angle = atan2(grad_y, grad_x);
-			//angle *= 180 / CV_PI;
-			//angle += 180;
-			//自己找办法优化三角函数速度，并且转化为角度制，规范化到0-360
 			(gray_angle.data)[temp1_sub] = *(int*)&(angle_sub) / 2;
 		}
 	}
-	//该图用于记录每一个像素位置的匹配误差
-	//Mat searchImg(height, width, CV_32FC1);
-	//匹配误差初始化
-	//searchImg.setTo(FLT_MAX);
 	int a, b;
-	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for(int i = 0; i < height - sub_height; i++)
 	{
 		int temp = i*width;
 		for (int j = 0; j < width - sub_width; j++)
 		{
 			float total_diff = 0;
-			//遍历模板图上的每一个像素
 			int temp1 = temp + j;
 			for (int in_x = 1; in_x < sub_height-1; in_x++)
 			{
@@ -542,13 +502,10 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y) {
 					int temp3 = temp2 + in_y;
 					int pix= sub_angle.data[sub + in_y] - gray_angle.data[temp3];
 					pix= (1-2 * ((pix >> 31) & 1))*pix;
-					pix = 90 + (2 * (((pix - 90) >> 31) & 1) - 1)*(pix-90);    //保证角度的圆周性
+					pix = 90 + (2 * (((pix - 90) >> 31) & 1) - 1)*(pix-90);    
 					total_diff += pix;
-					//大图上的像素位置
-					//模板图上的像素
 				}
 			}
-			//存储当前像素位置的匹配误差
 			if (Min > total_diff) {
 				Min = total_diff;
 				a = j;
@@ -599,7 +556,7 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y) {
 	
 	int row_i, col_j, temp_sub, temp1_sub;
 	float grad_x_sub, grad_y_sub,mag_sub;
-	for (row_i = 1; row_i < sub_height - 1; row_i++)     //对小图做整形的幅值计算
+	for (row_i = 1; row_i < sub_height - 1; row_i++)     
 	{
 		temp_sub = row_i * sub_width;
 		for (col_j = 1; col_j < sub_width - 1; col_j += 1)
@@ -613,7 +570,7 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y) {
 		}
 	}
 
-	for (row_i = 1; row_i < height - 1; row_i++)     //对大图做整形的幅值计算
+	for (row_i = 1; row_i < height - 1; row_i++)   
 	{
 		temp_sub = row_i * width;
 		for (col_j = 1; col_j < width - 1; col_j += 1)
@@ -628,14 +585,12 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y) {
 	}
 	
 	int a, b;
-	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		int temp = i*width;
 		for (int j = 0; j < width - sub_width; j++)
 		{
 			int total_diff = 0;
-			//遍历模板图上的每一个像素
 			int temp1 = temp + j;
 			for (int in_x = 1; in_x < sub_height-1; in_x++)
 			{
@@ -646,11 +601,8 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y) {
 					int temp3 = temp2 + in_y;
 					int pix = (sub_mag.data)[sub + in_y] - (gray_mag.data)[temp3];
 					total_diff -= (2 * ((pix >> 31) & 1) - 1)*pix;
-					//大图上的像素位置
-					//模板图上的像素
 				}
 			}
-			//存储当前像素位置的匹配误差
 			if (Min > total_diff) {
 				Min = total_diff;
 				a = j;
@@ -692,7 +644,6 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y) {
 
 
 	int a, b;
-	//遍历大图每一个像素，注意行列的起始、终止坐标
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		int temp = i*width;
@@ -717,7 +668,6 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y) {
 				grayhist[k] = 0; k += 1;
 				grayhist[k] = 0; k += 1;
 			}
-			//遍历模板图上的每一个像素
 			int temp1 = temp + j;
 			for (int in_x = 0; in_x < sub_height; in_x++)
 			{
@@ -725,8 +675,6 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y) {
 				for (int in_y = 0; in_y < sub_width; in_y++)
 				{
 					grayhist[searchImg.data[temp2 + in_y]]+=1;
-					//大图上的像素位置
-					//模板图上的像素
 				}
 			}
 			for (int k = 0; k < 256; ) {
@@ -755,7 +703,6 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y) {
 				total_diff -= (2 * ((diff >> 31) & 1) - 1)*diff;
 				k += 1;
 			}
-			//存储当前像素位置的匹配误差
 			if (Min > total_diff) {
 				Min = total_diff;
 				a = j;
