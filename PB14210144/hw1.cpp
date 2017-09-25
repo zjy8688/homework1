@@ -1,8 +1,7 @@
-#include "opencv.hpp"
+#include "SubImageMatch.h"
 using namespace cv;
-#include <iostream>
 using namespace std;
-#include <time.h>
+
 
 //#define IMG_SHOW
 #define MY_OK 1
@@ -248,7 +247,7 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)
 
 #ifdef IMG_SHOW
 	Mat gradImg_x_8U(grayImg.rows, grayImg.cols, CV_8UC1);
-	//为了方便观察，直接取绝对值
+	
 	for (int row_i = 0; row_i < height; row_i++)
 	{
 		for (int col_j = 0; col_j < width; col_j += 1)
@@ -316,7 +315,7 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat & angleImg, Mat & magImg
 	int width = gradImg_x.cols;
 	int height = gradImg_x.rows;
 
-	//计算角度图
+	
 	int size = gradImg_x.cols * gradImg_x.rows;
 	/*float grad_x, grad_y, angle;
 	for (int i = size - 1; i >= 0; i--){
@@ -384,7 +383,7 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat & angleImg, Mat & magImg
 #ifdef IMG_SHOW
 	Mat angleImg_8U(height, width, CV_8UC1);
 	Mat magImg_8U(height, width, CV_8UC1);
-	//为了方便观察，进行些许变化
+	
 	for (int row_i = 0; row_i < height; row_i++)
 	{
 		for (int col_j = 0; col_j < width; col_j += 1)
@@ -392,7 +391,7 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat & angleImg, Mat & magImg
 			float angle = ((float*)angleImg.data)[row_i * width + col_j];
 			angle *= 180 / CV_PI;
 			angle += 180;
-			//为了能在8U上显示，缩小到0-180之间
+			
 			angle /= 2;
 			angleImg_8U.data[row_i * width + col_j] = angle;
 			magImg_8U.data[row_i * width + col_j] = ((float*)magImg.data)[row_i * width + col_j] / 10;
@@ -478,9 +477,9 @@ int ustc_CalcHist(Mat grayImg, int* hist, int hist_len)
 	}
 
 	int size = grayImg.rows * grayImg.cols, i;
-	//直方图清零
+	
 	memset(hist, 0, sizeof(int) * hist_len);
-	//计算直方图
+	
 	
 	for (i = size - 1; i >= 0; i--)
 		hist[grayImg.data[i]]++;
@@ -512,28 +511,28 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y)
 	uint min_diff = 0 - 1, min_x = 0, min_y = 0, total_diff;
 	int i, j, m, n, img_i, sub_i, a, b;
 
-	/*//遍历大图每一个像素，注意行列的起始、终止坐标
+	/*
 	for (int i = 0; i < height - sub_height; i++)
 	{
 		for (int j = 0; j < width - sub_width; j++)
 		{
 			int total_diff = 0;
-			//遍历模板图上的每一个像素
+			
 			for (int x = 0; x < sub_height; x++)
 			{
 				for (int y = 0; y < sub_width; y++)
 				{
-					//大图上的像素位置
+					
 					int row_index = i + y;
 					int col_index = j + x;
 					int bigImg_pix = grayImg.data[row_index * width + col_index];
-					//模板图上的像素
+					
 					int template_pix = subImg.data[y * sub_width + x];
 
 					total_diff += abs(bigImg_pix - template_pix);
 				}
 			}
-			//存储当前像素位置的匹配误差
+			
 			((float*)searchImg.data)[i * width + j] = total_diff;
 		}
 	}*/
@@ -546,7 +545,7 @@ int ustc_SubImgMatch_gray(Mat grayImg, Mat subImg, int* x, int* y)
 		{
 			total_diff = 0;
 			out = _mm_setzero_si128();
-			//遍历模板图上的每一个像素
+			
 			for (m = 0; m < sub_height; m++)
 			{
 				for (n = sub_width - 16, sub_i = m * sub_width, img_i = (i + m) * width + j; n >= 0; n -= 16, sub_i += 16, img_i += 16)
@@ -623,7 +622,7 @@ int ustc_SubImgMatch_bgr(Mat colorImg, Mat subImg, int* x, int* y)
 		{
 			total_diff = 0;
 			out = _mm_setzero_si128();
-			//遍历模板图上的每一个像素
+			
 			for (m = 0; m < sub_height; m++)
 			{
 				for (n = sub_width - 16, sub_i = m * sub_width, img_i = (i + m) * width + j; n >= 0; n -= 16, sub_i += 16, img_i += 16)
@@ -694,7 +693,7 @@ int ustc_SubImgMatch_corr(Mat grayImg, Mat subImg, int* x, int* y){
 		{
 			st = 0, s2 = 0, t2 = 0;
 			ST = _mm_setzero_ps(), S2 = _mm_setzero_ps(), T2 = _mm_setzero_ps();
-			//遍历模板图上的每一个像素
+			
 			for (m = 0; m < sub_height; m++)
 			{
 				for (n = sub_width - 4, sub_i = m * sub_width, img_i = (i + m) * width + j; n >= 0; n -= 4, sub_i += 4, img_i += 4)
@@ -744,7 +743,7 @@ int CalcAngle(const Mat & gradImg_x, const Mat & gradImg_y, Mat & angleImg)
 	int width = gradImg_x.cols;
 	int height = gradImg_x.rows;
 
-	//计算角度图
+	
 	int size = gradImg_x.cols * gradImg_x.rows;
 	
 	static const uint mask = 0x7fffffff;
@@ -844,7 +843,7 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y){
 		{
 			total_diff = 0;
 			out = _mm_setzero_ps();
-			//遍历模板图上的每一个像素
+			
 			for (m = 1; m < sub_height - 1; m++)
 			{
 				for (n = sub_width - 4 - 2, sub_i = m * sub_width + 1, img_i = (i + m) * width + j + 1; n >= 0; n -= 4, sub_i += 4, img_i += 4)
@@ -885,7 +884,7 @@ int CalcMag(const Mat & gradImg_x, const Mat & gradImg_y, Mat & magImg)
 	int width = gradImg_x.cols;
 	int height = gradImg_x.rows;
 
-	//计算角度图
+	
 	int size = gradImg_x.cols * gradImg_x.rows;
 
 	static const uint mask = 0x7fffffff;
@@ -957,7 +956,7 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y){
 		{
 			total_diff = 0;
 			out = _mm_setzero_ps();
-			//遍历模板图上的每一个像素
+			
 			for (m = 1; m < sub_height - 1; m++)
 			{
 				for (n = sub_width - 4 - 2, sub_i = m * sub_width + 1, img_i = (i + m) * width + j + 1; n >= 0; n -= 4, sub_i += 4, img_i += 4)
@@ -1024,10 +1023,10 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y){
 		for (j = 0; j < w_range; j++)
 		{
 			out = _mm_setzero_si128();
-			//hist设为0
+			
 			for (m = 0; m < 256; m += 16)
 				_mm_storeu_si128((__m128i *)(hist + m), zeros);
-			//遍历模板图上的每一个像素
+			
 			for (m = 0; m < sub_height; m++)
 			{
 				for (n = sub_width, img_i = (i + m) * width + j; n > 0; n--, img_i++)
