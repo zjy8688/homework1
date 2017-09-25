@@ -1,9 +1,4 @@
 #include "SubImageMatch.h"
-#include <opencv2/opencv.hpp>
-#include <math.h>
-#include <iostream>
-using namespace cv;
-using namespace std;
 int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)
 {
 	if (bgrImg.data == nullptr)  return SUB_IMAGE_MATCH_FAIL;
@@ -44,69 +39,51 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)
 	gradImg_y=Mat(row, col, CV_32FC1);	
 	unsigned char *q, *q1, *q2;
 	float *p, *p1;
-	q = grayImg.ptr<uchar>(0);
-	q1 = grayImg.ptr<uchar>(1);
 	p= gradImg_x.ptr<float>(0);
 	p1= gradImg_y.ptr<float>(0);
-	q++;q1++;p++;p1++;
+	p++;p1++;
 	
 	for (i = 1;i < col - 1;i++)
 	{
-		*(p) = (float)(*(q + 1) * 3 - *(q - 1) * 3 + *(q1 + 1) - *(q1 - 1));
-		*(p1) = (float)(-(*q) * 2 - *(q + 1) - *(q - 1) + (*q1) * 2 + *(q1 + 1) + *(q1 - 1));
+		*(p) = 0;
+		*(p1) = 0;
 			p++;p1++;
 	}
-	q = grayImg.ptr<uchar>(row-1);
-	q1 = grayImg.ptr<uchar>(row-2);
 	p = gradImg_x.ptr<float>(row-1);
 	p1 = gradImg_y.ptr<float>(row-1);
-	q++;q1++;p++;p1++;
+	p++;p1++;
 	for (i = 1;i < col - 1;i++)
 	{
-		*(p++) = (float)(*(q + 1) * 3 - *(q - 1) * 3 + *(q1 + 1) - *(q1 - 1));
-		*(p1++) = (float)((*q) * 2 + *(q + 1) + *(q - 1) - (*q1) * 2 - *(q1 + 1) - *(q1 - 1));
+		*(p++) =0;
+		*(p1++) =0;
 	}
 	for (i = 1;i < row - 1;i++)
 	{
-		q = grayImg.ptr<uchar>(i-1);
-		q1 = grayImg.ptr<uchar>(i);
-		q2 = grayImg.ptr<uchar>(i+1);
 		p = gradImg_x.ptr<float>(i);
 		p1 = gradImg_y.ptr<float>(i);
-		*p = (float)((*(q + 1) + *(q1 + 1) * 2 + *(q2 + 1)) - (*q + *(q1) * 2 + *(q2)));
-		*p1 = (float)(((*q2) * 3 + *(q2 + 1)) - ((*q) * 3 + *(q + 1)));
-		q += col - 1;
-		q1 += col - 1;
-		q2 += col - 1;
+		*p = 0;
+		*p1 = 0;
 		p += col - 1;
 		p1 += col - 1;
-		*p = (float)(-(*(q - 1) + *(q1 - 1) * 2 + *(q2 - 1)) + (*q + *(q1) * 2 + *(q2)));
-		*p1 = (float)(((*q2) * 3 + *(q2 - 1)) - ((*q) * 3 + *(q - 1)));
+		*p = 0;
+		*p1 = 0;
 	}
-	q = grayImg.ptr<uchar>(0);
-	q1 = grayImg.ptr<uchar>(1);
 	p = gradImg_x.ptr<float>(0);
 	p1 = gradImg_y.ptr<float>(0);
-	*p = (float)((*(q + 1) * 3 + *(q1 + 1)) - ((*q) * 3 + *q1));
-	*p1= (float)(((*q1) * 3 + *(q1+1)) - ((*q) * 3 + *(q+1)));
-	q += col - 1;
-	q1 += col - 1;
+	*p = 0;
+	*p1= 0;
 	p += col - 1;
 	p1 += col - 1;
-	*p = (float)(-(*(q - 1) * 3 + *(q1 - 1)) + ((*q) * 3 + *q1));
-	*p1 = (float)(((*q1) * 3 + *(q1 - 1)) - ((*q) * 3 + *(q - 1)));
-	q = grayImg.ptr<uchar>(row-1);
-	q1 = grayImg.ptr<uchar>(row-2);
+	*p = 0;
+	*p1 =0;
 	p = gradImg_x.ptr<float>(row-1);
 	p1 = gradImg_y.ptr<float>(row-1);
-	*p = (float)((*(q + 1) * 3 + *(q1 + 1)) - ((*q) * 3 + *q1));
-	*p1 = (float)(-((*q1) * 3 + *(q1 + 1)) + ((*q) * 3 + *(q + 1)));
-	q += col - 1;
-	q1 += col - 1;
+	*p = 0;
+	*p1 =0;
 	p += col - 1;
 	p1 += col - 1;
-	*p = (float)(-(*(q - 1) * 3 + *(q1 - 1)) + ((*q) * 3 + *q1));
-	*p1 = (float)(-((*q1) * 3 + *(q1 - 1)) + ((*q) * 3 + *(q - 1)));
+	*p =0;
+	*p1 = 0;
 
 	for (i = 1;i < row - 1;i++)	
 	{
@@ -512,7 +489,4 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y)
 			}
 		}
 	return SUB_IMAGE_MATCH_OK;
-}
-int main()
-{
 }
