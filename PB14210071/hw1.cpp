@@ -2,7 +2,7 @@
 #include "SubImageMatch.h"
 
 #define IMG_SHOW
-using namespace cv;
+
 int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)
 {
 	Mat raw_img = bgrImg;
