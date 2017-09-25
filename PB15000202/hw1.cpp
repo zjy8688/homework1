@@ -1,15 +1,4 @@
 #include "SubImageMatch.h"
-/*
-#include "opencv2/opencv.hpp"
-#include <opencv2/core/core.hpp>  
-#include <opencv2/highgui/highgui.hpp>  
-#include <iostream>
-#include <math.h>
-#include <time.h>
-//#include "SubImageMatch.h"
-*/
-using namespace cv;
-using namespace std;
 
 
 #define IMG_SHOW
@@ -214,7 +203,7 @@ int FastArctan(int x, int y)
 		else       return  i;
 	}
 }
-//输入x,y值，返回-180~180数值
+
 
 const int Rootbuf[] = { 1,1,2,3,4,6,8,11,
 16,23,32,45,64,91,128,181,256,362,512,724,1024,1448,2048,2896,4096,5793,8192,11585,16384,23170,32768,46341 };
@@ -1207,86 +1196,4 @@ int ustc_SubImgMatch_hist(Mat grayImg, Mat subImg, int* x, int* y) {
 	return 1;
 }
 
-
-
-
-int main() {
-	Mat colorImg= imread("pic.jpg", 1);
-	Mat grayImg = imread("pic.jpg", 0);
-	if (NULL == grayImg.data)
-	{
-		cout << "image read failed." << endl;
-		return 0;
-	}
-
-	int width = grayImg.cols;
-	int height = grayImg.rows;
-
-	Mat testgrayimg(height, width, CV_8UC1);
-	Mat Binary_img(height, width, CV_8UC1);
-	Mat gradImg_x(height, width, CV_32FC1);
-	Mat gradImg_y(height, width, CV_32FC1);
-	Mat angleImg(height, width, CV_32FC1);
-	Mat magImg(height, width, CV_32FC1);
-
-	Mat SubImage(50, 30, CV_8UC1);
-	SubImage = grayImg(Rect(100, 321, 40, 30)).clone();
-
-	Mat colorSubImage(40, 40, CV_8UC3);
-	colorSubImage = colorImg(Rect(120, 320, 40, 30)).clone();
-
-#ifdef IMG_SHOW
-	namedWindow("grayImg", 1);
-	imshow("grayImg", grayImg);
-	namedWindow("Subimg", 1);
-	imshow("Subimg", SubImage);
-	waitKey(1);
-
-#endif
-	int i = 0;
-	int j = 0;
-	int *x = &i, *y = &j;
-	time_t start = clock();
-	int hist[256];
-	for (int i = 0; i < TEST_TIMES; i++)
-	{
-		
-
-		ustc_ConvertBgr2Gray(colorImg,testgrayimg);
-		ustc_CalcGrad(grayImg,gradImg_x,gradImg_y);
-		ustc_CalcAngleMag(gradImg_x, gradImg_y, angleImg, magImg);
-		ustc_Threshold(grayImg, Binary_img, 100);
-		ustc_CalcHist(grayImg, hist, 256);
-		
-		cout << 1 << endl;
-		ustc_SubImgMatch_gray(grayImg, SubImage, x, y);
-		cout << "coordinates: " << *x << " " << *y << endl;
-		cout << 2 << endl;
-		ustc_SubImgMatch_bgr(colorImg, colorSubImage, x, y); 
-		cout << "coordinates: " << *x << " " << *y << endl;
-		cout << 3 << endl;
-		ustc_SubImgMatch_corr(grayImg, SubImage, x, y); 
-		cout << "coordinates: " << *x << " " << *y << endl;
-		cout << 4 << endl;
-		ustc_SubImgMatch_angle(grayImg, SubImage, x, y); 
-		cout << "coordinates: " << *x << " " << *y << endl;
-		cout << 5 << endl;
-		ustc_SubImgMatch_mag(grayImg, SubImage, x, y);
-		cout << "coordinates: " << *x << " " << *y << endl;
-		cout << 6 << endl;
-		ustc_SubImgMatch_hist(grayImg, SubImage, x, y); 
-		cout << "coordinates: " << *x << " " << *y << endl;
-
-	}
-	time_t end = clock();
-	cout << TEST_TIMES << " time: " << (end - start) << endl;
-
-	//namedWindow("Subimg", 1);
-	//imshow("Subimg", SubImage);
-	waitKey(0);
-	int temp;
-	//cin >> temp;
-
-	return 0;
-}
 
