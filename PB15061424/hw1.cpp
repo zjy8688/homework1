@@ -6,7 +6,7 @@ using namespace cv;
 #define pi 3.14159
 #include<math.h>
 
-int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)	//彩色图转灰度图
+int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)
 {
 	if (NULL == bgrImg.data)
 	{
@@ -30,7 +30,7 @@ int ustc_ConvertBgr2Gray(Mat bgrImg, Mat& grayImg)	//彩色图转灰度图
 	return SUB_IMAGE_MATCH_OK;
 }
 
-int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)	//根据灰度图计算梯度图像
+int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)	
 {
 	if (NULL == grayImg.data)
 	{
@@ -43,7 +43,7 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)	//根据灰度图
 	int nr = grayImg.rows;
 	int nc = grayImg.cols;
 	float *px,*py;
-	uchar *q1,*q2,*q3;	//p指向grad_x/grad_y的一行,q1、q2、q3指向灰度图的一行
+	uchar *q1,*q2,*q3;
 	gradImg_x = Mat(nr, nc, CV_32FC1, Scalar(0));
 	gradImg_y = Mat(nr, nc, CV_32FC1, Scalar(0));
 
@@ -64,15 +64,15 @@ int ustc_CalcGrad(Mat grayImg, Mat& gradImg_x, Mat& gradImg_y)	//根据灰度图
 	return SUB_IMAGE_MATCH_OK;
 }
 
-int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)	//计算角度和幅值
+int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)	
 {
 	if (NULL == gradImg_x.data || NULL == gradImg_y.data)
 	{
 		printf("gradImage is NULL!\n");
 		return SUB_IMAGE_MATCH_FAIL;
 	}
-	float *px, *py, *qa,*qm;	//q指向angleImg或magImg
-	float mag;	//der=dy/dx,mag=dy^2+dx^2
+	float *px, *py, *qa,*qm;
+	float mag;
 	int nr = gradImg_x.rows;
 	int nc = gradImg_x.cols;
 	int nr_y = gradImg_y.rows;
@@ -108,7 +108,7 @@ int ustc_CalcAngleMag(Mat gradImg_x, Mat gradImg_y, Mat& angleImg, Mat& magImg)	
 	return SUB_IMAGE_MATCH_OK;
 }
 
-int ustc_Threshold(Mat grayImg, Mat& binaryImg, int th)	//二值化
+int ustc_Threshold(Mat grayImg, Mat& binaryImg, int th)	
 {
 	if (NULL == grayImg.data)
 	{
@@ -364,14 +364,14 @@ int ustc_SubImgMatch_angle(Mat grayImg, Mat subImg, int* x, int* y)
 		return SUB_IMAGE_MATCH_FAIL;
 	}
 	int match_ok;
-	Mat gradImg_x, gradImg_y;	//计算梯度
+	Mat gradImg_x, gradImg_y;	
 	match_ok = ustc_CalcGrad(grayImg, gradImg_x, gradImg_y);
-	Mat angleImg, magImg;	//计算角度、幅值
+	Mat angleImg, magImg;
 	match_ok = ustc_CalcAngleMag(gradImg_x, gradImg_y, angleImg, magImg);
 
-	Mat sub_gradImg_x, sub_gradImg_y;	//计算子图梯度
+	Mat sub_gradImg_x, sub_gradImg_y;
 	match_ok = ustc_CalcGrad(subImg, sub_gradImg_x, sub_gradImg_y);
-	Mat sub_angleImg, sub_magImg;	//计算子图角度、幅值
+	Mat sub_angleImg, sub_magImg;
 	match_ok = ustc_CalcAngleMag(sub_gradImg_x, sub_gradImg_y, sub_angleImg, sub_magImg);
 
 	int nc = grayImg.cols;
@@ -427,14 +427,14 @@ int ustc_SubImgMatch_mag(Mat grayImg, Mat subImg, int* x, int* y)
 		return SUB_IMAGE_MATCH_FAIL;
 	}
 	int match_ok;
-	Mat gradImg_x, gradImg_y;	//计算梯度
+	Mat gradImg_x, gradImg_y;	
 	match_ok = ustc_CalcGrad(grayImg, gradImg_x, gradImg_y);
-	Mat angleImg, magImg;	//计算角度、幅值
+	Mat angleImg, magImg;
 	match_ok = ustc_CalcAngleMag(gradImg_x, gradImg_y, angleImg, magImg);
 
-	Mat sub_gradImg_x, sub_gradImg_y;	//计算子图梯度
+	Mat sub_gradImg_x, sub_gradImg_y;
 	match_ok = ustc_CalcGrad(subImg, sub_gradImg_x, sub_gradImg_y);
-	Mat sub_angleImg, sub_magImg;	//计算子图角度、幅值
+	Mat sub_angleImg, sub_magImg;
 	match_ok = ustc_CalcAngleMag(sub_gradImg_x, sub_gradImg_y, sub_angleImg, sub_magImg);
 
 	int nc = grayImg.cols;
